@@ -33,6 +33,7 @@ int main(int argc, char const *argv[]) {
     status = seal(global_eid, &ecall_status,
             (uint8_t*)&ptr, sizeof(ptr),
             (sgx_sealed_data_t*)sealed_data, sealed_size);
+    std::cout << "Sealed data: " << sealed_data << std::endl;
 
     if (!is_ecall_successful(status, "Sealing failed :(", ecall_status)) {
         return 1;
