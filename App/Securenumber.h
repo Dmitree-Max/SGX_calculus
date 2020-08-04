@@ -10,11 +10,13 @@
 class SecureNumber {
 private:
 	sgx_enclave_id_t enclave_id;
-	int* in_enclave_value;
+	int in_enclave_place;
 public:
 	SecureNumber(sgx_enclave_id_t enclave_id, int value);
 	virtual ~SecureNumber();
-	friend std::ostream& operator<< (std::ostream &out, const SecureNumber &point);
+	friend std::ostream& operator<< (std::ostream &out, const SecureNumber &number);
+	friend void operator+= (SecureNumber &dst, const SecureNumber &src);
+	friend void operator*= (SecureNumber &dst, const SecureNumber &src);
 };
 
 #endif
