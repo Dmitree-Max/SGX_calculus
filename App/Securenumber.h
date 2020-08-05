@@ -16,6 +16,7 @@ public:
 	virtual ~SecureNumber();
 	friend std::ostream& operator<< (std::ostream &out, const SecureNumber &number);
 	friend void operator+= (SecureNumber &dst, const SecureNumber &src);
+	friend void operator-= (SecureNumber &dst, const SecureNumber &src);
 	friend void operator*= (SecureNumber &dst, const SecureNumber &src);
 };
 

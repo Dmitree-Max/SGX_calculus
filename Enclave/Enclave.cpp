@@ -4,11 +4,6 @@ int ProtectedNumbers[50];
 int i = 0;
 
 
-int generate_random_number()
-{
-    ocall_print("Processing random number generation...");
-    return 42;
-}
 
 int get_number(int number_in_array)
 {
@@ -21,6 +16,7 @@ void initialize_new_number(int value, int* number_in_array)
 	ProtectedNumbers[i] = value;
 	*number_in_array = i;
 	i += 1;
+	i = i % 50;
 	return;
 }
 
@@ -36,6 +32,13 @@ void print_number(int number_in_array)
 void add_numbers(int dst, int src)
 {
 	ProtectedNumbers[dst] += ProtectedNumbers[src];
+	return;
+}
+
+
+void substract_numbers(int dst, int src)
+{
+	ProtectedNumbers[dst] -= ProtectedNumbers[src];
 	return;
 }
 

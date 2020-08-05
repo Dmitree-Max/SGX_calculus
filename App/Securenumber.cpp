@@ -56,6 +56,23 @@ void operator+= (SecureNumber &dst, const SecureNumber &src)
 }
 
 
+void operator-= (SecureNumber &dst, const SecureNumber &src)
+{
+	if (dst.enclave_id != src.enclave_id)
+	{
+		std::cout << "Can't add numbers from different enclaves\n";
+		return;
+	}
+
+	sgx_status_t status = substract_numbers(dst.enclave_id, dst.in_enclave_place, src.in_enclave_place);
+    if (status != SGX_SUCCESS)
+    {
+        std::cout << "Addition in enclave is unsuccessful" << std::endl;
+    }
+
+}
+
+
 void operator*= (SecureNumber &dst, const SecureNumber &src)
 {
 	if (dst.enclave_id != src.enclave_id)

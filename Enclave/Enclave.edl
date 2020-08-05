@@ -1,13 +1,13 @@
 enclave {
     from "Sealing/Sealing.edl" import *;
 
-
     trusted {
         /* define ECALLs here. */
         public void initialize_new_number(int value, [out] int* pointer);
-        public int generate_random_number(void);
+
         public void print_number(int number_in_array);
         public void add_numbers(int dst, int src);
+        public void substract_numbers(int dst, int src);
         public void multiple_numbers(int dst, int src);
         public int get_number(int number_in_array); 
         

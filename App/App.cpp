@@ -2,9 +2,11 @@
 #include <iostream>
 #include "Enclave_u.h"
 #include "sgx_urts.h"
+
 #include "sgx_utils/sgx_utils.h"
+#include "sgx_capable.h"
+
 #include "Securenumber.h"
-#include <string>
 
 /* Global EID shared by multiple threads */
 sgx_enclave_id_t global_eid = 0;
@@ -20,31 +22,36 @@ void ocall_print_number(int number) {
 }
 
 
-int main(int argc, char const *argv[]) {
-//    if(sgx_is_capable(&updated) != SGX_ENABLED)
-//    {
-//            printf("Error %#x: SGX is not enabled on this device\n", ret);
-//            return -1;
-//    }
+void print_array(int* array, int length)
+{
+	std::cout << "array: ";
+	for (int i = 0; i<4; i++)
+		std::cout << array[i];
+	std::cout << std::endl;
+}
 
+
+int main(int argc, char const *argv[])
+{
+
+	sgx_status_t status = SGX_SUCCESS;
+	sgx_device_status_t device_status;
+    if(sgx_cap_enable_device(&device_status) != SGX_SUCCESS)
+    {
+            printf("Error %#x: SGX is not enabled on this device\n", device_status);
+            return -1;
+    }
 
 
     if (initialize_enclave(&global_eid, "enclave.token", "enclave.signed.so") < 0) {
         std::cout << "Fail to initialize enclave." << std::endl;
         return 1;
     }
-    int ptr;
-    sgx_status_t status = generate_random_number(global_eid, &ptr);
-    std::cout << status << std::endl;
-    if (status != SGX_SUCCESS) {
-        std::cout << "error" << std::endl;
-    }
 
+
+    // Calculate hash of an array
     int example_array[] = {1, 4, 5, 7};
-	std::cout << "array: ";
-	for (int i = 0; i<4; i++)
-		std::cout << example_array[i];
-	std::cout << std::endl;
+    print_array(example_array, 4);
     int size = sizeof(int)*4;
     int hash = 0;
     status = calc_hash(global_eid, example_array, size, &hash);
@@ -56,6 +63,9 @@ int main(int argc, char const *argv[]) {
 	{
 		std::cout << "hash: " << hash <<std::endl;
 	}
+
+
+	// Shuffle an array
     status = shuffle_array(global_eid, example_array, size);
 	if (status != SGX_SUCCESS)
 	{
@@ -63,11 +73,12 @@ int main(int argc, char const *argv[]) {
 	}
 	else
 	{
-		std::cout << "shuffled: ";
-		for (int i = 0; i<4; i++)
-			std::cout << example_array[i];
-		std::cout << std::endl;
+		std::cout << "shuffled:\n   ";
+		print_array(example_array, 4);
 	}
+
+
+	// Calculate new hash
     status = calc_hash(global_eid, example_array, size, &hash);
 	if (status != SGX_SUCCESS)
 	{
@@ -87,7 +98,7 @@ int main(int argc, char const *argv[]) {
     status = seal(global_eid, &ecall_status,
             (uint8_t*)&hash, sizeof(hash),
             (sgx_sealed_data_t*)sealed_data, sealed_size);
-
+    hash = 0;
 
 
 
@@ -103,6 +114,8 @@ int main(int argc, char const *argv[]) {
     b += b;
     std::cout << b;
     a *= b;
+    std::cout << a;
+    a -= b;
     std::cout << a;
 
 
